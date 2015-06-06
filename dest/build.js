@@ -1,0 +1,1 @@
+$(function(){console.log("World")}),$(function(){console.log("Hello")});
