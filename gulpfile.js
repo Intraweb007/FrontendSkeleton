@@ -13,6 +13,7 @@ var spritesmith = require('gulp.spritesmith');
 var browserSync = require('browser-sync').create();
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var notify = require("gulp-notify");
 
 // Stylus to CSS
 gulp.task('stylus', function () {
@@ -44,7 +45,8 @@ gulp.task('css', ['concat'], function () {
 gulp.task('minify-css', ['css'], function() {
     return gulp.src('./dest/build.css')
         .pipe(minifyCss({compatibility: 'ie8'}))
-        .pipe(gulp.dest('dest'));
+        .pipe(gulp.dest('dest'))
+        .pipe(notify("CSS cкомпилирован!"));
 });
 
 // Спрайты
@@ -73,7 +75,8 @@ gulp.task('scripts', function() {
 gulp.task('compress', ['scripts'], function() {
     return gulp.src('./dest/build.js')
         .pipe(uglify())
-        .pipe(gulp.dest('dest'));
+        .pipe(gulp.dest('dest'))
+        .pipe(notify("JS файл готов!"));
 });
 
 
