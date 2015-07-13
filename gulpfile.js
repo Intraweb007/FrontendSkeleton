@@ -14,10 +14,15 @@ var browserSync = require('browser-sync').create();
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var notify = require("gulp-notify");
+var plumber = require('gulp-plumber');
+var gutil = require('gulp-util');
 
 // Stylus to CSS
 gulp.task('stylus', function () {
     return gulp.src('./src/stylus/collector.styl')
+        .pipe(plumber({
+            errorHandler: onError
+        }))
         .pipe(stylus(
             { use: [nib(), jeet(), rupture()],  import: ['nib', 'jeet', 'rupture']}
         ))
@@ -27,6 +32,9 @@ gulp.task('stylus', function () {
 
 gulp.task('concat', ['stylus'], function () {
     return gulp.src(['./src/css/*.css', '!./src/css/build.css'])
+        .pipe(plumber({
+            errorHandler: onError
+        }))
         .pipe(concatCss("build.css"))
         .pipe(gulp.dest('./src/css'));
 });
@@ -38,12 +46,18 @@ gulp.task('css', ['concat'], function () {
         csswring
     ];
     return gulp.src('./src/css/build.css')
+        .pipe(plumber({
+            errorHandler: onError
+        }))
         .pipe(postcss(processors))
         .pipe(gulp.dest('./dest'));
 });
 
 gulp.task('minify-css', ['css'], function() {
     return gulp.src('./dest/build.css')
+        .pipe(plumber({
+            errorHandler: onError
+        }))
         .pipe(minifyCss({compatibility: 'ie8'}))
         .pipe(gulp.dest('dest'))
         .pipe(notify("CSS cкомпилирован!"));
@@ -68,12 +82,18 @@ gulp.task('scripts', function() {
         './src/js/plugins.js',
         './src/js/main.js'
     ])
+        .pipe(plumber({
+            errorHandler: onError
+        }))
         .pipe(concat('build.js'))
         .pipe(gulp.dest('./dest/'));
 });
 
 gulp.task('compress', ['scripts'], function() {
     return gulp.src('./dest/build.js')
+        .pipe(plumber({
+            errorHandler: onError
+        }))
         .pipe(uglify())
         .pipe(gulp.dest('dest'))
         .pipe(notify("JS файл готов!"));
@@ -100,3 +120,8 @@ gulp.task('serve', function() {
     gulp.watch("dest/build.js").on('change', browserSync.reload);
     gulp.watch("*.html").on('change', browserSync.reload);
 });
+
+var onError = function (err) {
+    gutil.beep();
+    console.log(err);
+};
