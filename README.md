@@ -1,4 +1,4 @@
-# Скелёт вёрстки (Stylus, Jeet)
+# Скелёт вёрстки (Stylus, Lost, Boy)
 
 ## Подготовка
 Устанавливаем зависимости и `gulp` если необходимо:
@@ -31,8 +31,8 @@ $ npm install
 Файл `sprites.styl` уже подключён в `collector.styl`. В стилях просто пишем `retinaSprite($<icon_filename>_group)` и для блока у нас ставится спрайт и под ретину и под обычные экраны.
 
 ## Под капотом:
-### Stylus: Jeet, Rupture, Nib, Autoprefixer
-### Sprites: Spritesmith
+### Stylus: [Boy](https://github.com/corysimmons/boy), [Lost](https://github.com/corysimmons/lost), [Rupture](https://github.com/jenius/rupture), [Nib](https://github.com/tj/nib), [Autoprefixer](https://github.com/postcss/autoprefixer)
+### Sprites: [Spritesmith](https://github.com/twolfson/gulp.spritesmith)
 
 ## License
 

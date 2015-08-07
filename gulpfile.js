@@ -1,21 +1,22 @@
-var postcss = require('gulp-postcss');
-var gulp = require('gulp');
-var autoprefixer = require('autoprefixer-core');
-var mqpacker = require('css-mqpacker');
-var csswring = require('csswring');
-var stylus = require('gulp-stylus');
-var concatCss = require('gulp-concat-css');
-var minifyCss = require('gulp-minify-css');
-var nib = require('nib');
-var jeet = require('jeet');
-var rupture = require('rupture');
-var spritesmith = require('gulp.spritesmith');
-var browserSync = require('browser-sync').create();
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var notify = require("gulp-notify");
-var plumber = require('gulp-plumber');
-var gutil = require('gulp-util');
+var postcss      = require('gulp-postcss'),
+    gulp         = require('gulp'),
+    autoprefixer = require('autoprefixer-core'),
+    mqpacker     = require('css-mqpacker'),
+    csswring     = require('csswring'),
+    stylus       = require('gulp-stylus'),
+    concatCss    = require('gulp-concat-css'),
+    minifyCss    = require('gulp-minify-css'),
+    nib          = require('nib'),
+    rupture      = require('rupture'),
+    spritesmith  = require('gulp.spritesmith'),
+    browserSync  = require('browser-sync').create(),
+    concat       = require('gulp-concat'),
+    uglify       = require('gulp-uglify'),
+    notify       = require("gulp-notify"),
+    plumber      = require('gulp-plumber'),
+    gutil        = require('gulp-util'),
+    lost         = require('lost'),
+    poststylus   = require('poststylus');
 
 // Stylus to CSS
 gulp.task('stylus', function () {
@@ -24,13 +25,13 @@ gulp.task('stylus', function () {
             errorHandler: onError
         }))
         .pipe(stylus(
-            { use: [nib(), jeet(), rupture()],  import: ['nib', 'jeet', 'rupture']}
+            {use: [nib(), poststylus(['lost']), rupture()], import: ['nib', 'rupture']}
         ))
         .pipe(gulp.dest('./src/css'))
         .pipe(browserSync.stream());
 });
 
-gulp.task('concat', ['stylus'], function () {
+gulp.task('concat', function () {
     return gulp.src(['./src/css/*.css', '!./src/css/build.css'])
         .pipe(plumber({
             errorHandler: onError
@@ -53,7 +54,7 @@ gulp.task('css', ['concat'], function () {
         .pipe(gulp.dest('./dest'));
 });
 
-gulp.task('minify-css', ['css'], function() {
+gulp.task('minify-css', ['css'], function () {
     return gulp.src('./dest/build.css')
         .pipe(plumber({
             errorHandler: onError
@@ -77,7 +78,7 @@ gulp.task('sprite', function () {
 });
 
 // Скрипты
-gulp.task('scripts', function() {
+gulp.task('scripts', function () {
     return gulp.src([
         './src/js/plugins.js',
         './src/js/main.js'
@@ -89,7 +90,7 @@ gulp.task('scripts', function() {
         .pipe(gulp.dest('./dest/'));
 });
 
-gulp.task('compress', ['scripts'], function() {
+gulp.task('compress', ['scripts'], function () {
     return gulp.src('./dest/build.js')
         .pipe(plumber({
             errorHandler: onError
@@ -101,12 +102,12 @@ gulp.task('compress', ['scripts'], function() {
 
 
 // Действие по умолчанию
-gulp.task('default', function(){
+gulp.task('default', function () {
     gulp.start('minify-css', 'compress');
 });
 
 // Сервер
-gulp.task('serve', function() {
+gulp.task('serve', function () {
     browserSync.init({
         server: {
             baseDir: "./"
@@ -114,7 +115,7 @@ gulp.task('serve', function() {
     });
 
     gulp.watch("src/stylus/**/*.styl", ['stylus']);
-    gulp.watch("src/css/**/*.css", ['minify-css']);
+    gulp.watch("src/css/collector.css", ['minify-css']);
     gulp.watch("src/js/**/*.js", ['compress']);
     gulp.watch("dest/build.css").on('change', browserSync.reload);
     gulp.watch("dest/build.js").on('change', browserSync.reload);
