@@ -1,0 +1,48 @@
+{
+    "stylus": {
+        "collectorPath": "./src/stylus/collector.styl",
+        "collectorCompilePath": "./src/css"
+    },
+    "concat": {
+        "path": ["./src/css/*.css", "!./src/css/build.css"],
+        "resultCss": "build.css",
+        "resultPath": "./src/css"
+    },
+    "css": {
+        "path": "./src/css/build.css",
+        "resultPath": "./dist"
+    },
+    "minify": {
+        "path": "./dist/build.css",
+        "resultPath": "./dist"
+    },
+    "sprite": {
+        "path": "./img/icons/*.png",
+        "retinaSrcFilter": ["./img/icons/*-2x.png"],
+        "resultPath": "./",
+        "imgName": "./img/sprites/sprite.png",
+        "retinaImgName": "./img/sprites/sprite.retina-2x.png",
+        "cssName": "./src/stylus/sprites.styl",
+        "imgPath": "../img/sprites/sprite.png",
+        "retinaImgPath": "../img/sprites/sprite.retina-2x.png"
+    },
+    "scripts": {
+        "files": [
+            "./src/js/plugins.js",
+            "./src/js/main.js"
+        ],
+        "resultFile": "build.js",
+        "resultPath": "./dist"
+    },
+    "compress": {
+        "path": "./dist/build.js",
+        "resultPath": "./dist"
+    },
+    "watch": {
+        "stylus": "./src/stylus/**/*.styl",
+        "minify": "./src/css/collector.css",
+        "compress": "./src/js/**/*.js",
+        "buildCss": "./dist/build.css",
+        "buildJs": "./dist/build.js"
+    }
+}

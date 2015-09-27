@@ -114,6 +114,21 @@ section:after {
   display: table;
   clear: both;
 }
+span {
+  display: block;
+  background-image: url("../img/sprites/sprite.png");
+  background-position: 0px 0px;
+  width: 61px;
+  height: 49px;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  span {
+    background-image: url("../img/sprites/sprite.retina-2x.png");
+    -webkit-background-size: 61px 49px;
+    -moz-background-size: 61px 49px;
+    background-size: 61px 49px;
+  }
+}
 div {
   padding: 20px;
   background: #999;

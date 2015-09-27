@@ -1,6 +1,6 @@
 var postcss      = require('gulp-postcss'),
     gulp         = require('gulp'),
-    autoprefixer = require('autoprefixer-core'),
+    autoprefixer = require('autoprefixer'),
     mqpacker     = require('css-mqpacker'),
     csswring     = require('csswring'),
     stylus       = require('gulp-stylus'),
@@ -16,97 +16,100 @@ var postcss      = require('gulp-postcss'),
     plumber      = require('gulp-plumber'),
     gutil        = require('gulp-util'),
     lost         = require('lost'),
-    poststylus   = require('poststylus');
+    poststylus   = require('poststylus'),
+    config       = require('config'),
+    babel        = require("gulp-babel");
 
 // Stylus to CSS
 gulp.task('stylus', function () {
-    return gulp.src('./src/stylus/collector.styl')
+    return gulp.src(config.get('stylus.collectorPath'))
         .pipe(plumber({
             errorHandler: onError
         }))
         .pipe(stylus(
             {use: [nib(), poststylus(['lost']), rupture()], import: ['nib', 'rupture']}
         ))
-        .pipe(gulp.dest('./src/css'))
+        .pipe(gulp.dest(config.get('stylus.collectorCompilePath')))
         .pipe(browserSync.stream());
 });
 
+// Concat CSS Files
 gulp.task('concat', function () {
-    return gulp.src(['./src/css/*.css', '!./src/css/build.css'])
+    return gulp.src(config.get('concat.path'))
         .pipe(plumber({
             errorHandler: onError
         }))
-        .pipe(concatCss("build.css"))
-        .pipe(gulp.dest('./src/css'));
+        .pipe(concatCss(config.get('concat.resultCss')))
+        .pipe(gulp.dest(config.get('concat.resultPath')));
 });
 
+// CSS
 gulp.task('css', ['concat'], function () {
     var processors = [
         autoprefixer({browsers: ['last 3 version']}),
         mqpacker,
         csswring
     ];
-    return gulp.src('./src/css/build.css')
+    return gulp.src(config.get('css.path'))
         .pipe(plumber({
             errorHandler: onError
         }))
         .pipe(postcss(processors))
-        .pipe(gulp.dest('./dest'));
+        .pipe(gulp.dest(config.get('css.resultPath')));
 });
 
+// Minify CSS
 gulp.task('minify-css', ['css'], function () {
-    return gulp.src('./dest/build.css')
+    return gulp.src(config.get('minify.path'))
         .pipe(plumber({
             errorHandler: onError
         }))
         .pipe(minifyCss({compatibility: 'ie8'}))
-        .pipe(gulp.dest('dest'))
+        .pipe(gulp.dest(config.get('minify.resultPath')))
         .pipe(notify("CSS cкомпилирован!"));
 });
 
-// Спрайты
+// Sprites
 gulp.task('sprite', function () {
-    var spriteData = gulp.src('img/icons/*.png').pipe(spritesmith({
-        imgName: 'sprites/spritesheet.png',
-        cssName: '../src/stylus/sprites.styl',
-        retinaSrcFilter: ['img/icons/*-2x.png'],
-        retinaImgName: 'sprites/spritesheet.retina-2x.png',
-        imgPath: "../img/sprites/spritesheet.png",
-        retinaImgPath: "../img/sprites/spritesheet.retina-2x.png"
+    var spriteData = gulp.src(config.get('sprite.path')).pipe(spritesmith({
+        imgName: config.get('sprite.imgName'),
+        cssName: config.get('sprite.cssName'),
+        retinaSrcFilter: config.get('sprite.retinaSrcFilter'),
+        retinaImgName: config.get('sprite.retinaImgName'),
+        imgPath: config.get('sprite.imgPath'),
+        retinaImgPath: config.get('sprite.retinaImgPath')
     }));
-    return spriteData.pipe(gulp.dest('./img'));
+    return spriteData.pipe(gulp.dest(config.get('sprite.resultPath')));
 });
 
-// Скрипты
+// Scripts
 gulp.task('scripts', function () {
-    return gulp.src([
-        './src/js/plugins.js',
-        './src/js/main.js'
-    ])
+    return gulp.src(config.get('scripts.files'))
         .pipe(plumber({
             errorHandler: onError
         }))
-        .pipe(concat('build.js'))
-        .pipe(gulp.dest('./dest/'));
+        .pipe(concat(config.get('scripts.resultFile')))
+        .pipe(gulp.dest(config.get('scripts.resultPath')));
 });
 
+// Compress
 gulp.task('compress', ['scripts'], function () {
-    return gulp.src('./dest/build.js')
+    return gulp.src(config.get('compress.path'))
         .pipe(plumber({
             errorHandler: onError
         }))
+        .pipe(babel())
         .pipe(uglify())
-        .pipe(gulp.dest('dest'))
+        .pipe(gulp.dest(config.get('compress.resultPath')))
         .pipe(notify("JS файл готов!"));
 });
 
-
-// Действие по умолчанию
+// Default action
 gulp.task('default', function () {
     gulp.start('minify-css', 'compress');
 });
 
-// Сервер
+// Server
 gulp.task('serve', function () {
     browserSync.init({
         server: {
@@ -114,11 +117,11 @@ gulp.task('serve', function () {
         }
     });
 
-    gulp.watch("src/stylus/**/*.styl", ['stylus']);
-    gulp.watch("src/css/collector.css", ['minify-css']);
-    gulp.watch("src/js/**/*.js", ['compress']);
-    gulp.watch("dest/build.css").on('change', browserSync.reload);
-    gulp.watch("dest/build.js").on('change', browserSync.reload);
+    gulp.watch(config.get('watch.stylus'), ['stylus']);
+    gulp.watch(config.get('watch.minify'), ['minify-css']);
+    gulp.watch(config.get('watch.compress'), ['compress']);
+    gulp.watch(config.get('watch.buildCss')).on('change', browserSync.reload);
+    gulp.watch(config.get('watch.buildJs')).on('change', browserSync.reload);
     gulp.watch("*.html").on('change', browserSync.reload);
 });
 

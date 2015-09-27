@@ -1,0 +1,1 @@
+"use strict";function _classCallCheck(l,o){if(!(l instanceof o))throw new TypeError("Cannot call a class as a function")}console.log("Plugins"),$(function(){console.log("Hello World");var l=function o(){_classCallCheck(this,o),console.log("Hello, ES6!")};new l});
