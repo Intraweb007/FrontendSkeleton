@@ -26,16 +26,13 @@
         "imgPath": "../img/sprites/sprite.png",
         "retinaImgPath": "../img/sprites/sprite.retina-2x.png"
     },
-    "scripts": {
-        "files": [
-            "./src/js/plugins.js",
-            "./src/js/main.js"
-        ],
-        "resultFile": "build.js",
-        "resultPath": "./dist"
-    },
     "compress": {
         "path": "./dist/build.js",
+        "resultPath": "./dist/min"
+    },
+    "browserify": {
+        "path": "./src/js/main.js",
+        "resultFile": "build.js",
         "resultPath": "./dist"
     },
     "watch": {
@@ -43,6 +40,6 @@
         "minify": "./src/css/collector.css",
         "compress": "./src/js/**/*.js",
         "buildCss": "./dist/build.css",
-        "buildJs": "./dist/build.js"
+        "buildJs": "./dist/min/build.js"
     }
 }

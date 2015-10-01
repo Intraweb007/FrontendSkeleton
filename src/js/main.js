@@ -1,6 +1,6 @@
-$(function() {
-    console.log('Hello World');
+var module = require('./module');
 
+$(function() {
     class App {
         constructor() {
             console.log('Hello, ES6!');

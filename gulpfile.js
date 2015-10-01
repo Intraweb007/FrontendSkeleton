@@ -1,24 +1,27 @@
-var postcss      = require('gulp-postcss'),
-    gulp         = require('gulp'),
-    autoprefixer = require('autoprefixer'),
-    mqpacker     = require('css-mqpacker'),
-    csswring     = require('csswring'),
-    stylus       = require('gulp-stylus'),
-    concatCss    = require('gulp-concat-css'),
-    minifyCss    = require('gulp-minify-css'),
-    nib          = require('nib'),
-    rupture      = require('rupture'),
-    spritesmith  = require('gulp.spritesmith'),
-    browserSync  = require('browser-sync').create(),
-    concat       = require('gulp-concat'),
-    uglify       = require('gulp-uglify'),
-    notify       = require("gulp-notify"),
-    plumber      = require('gulp-plumber'),
-    gutil        = require('gulp-util'),
-    lost         = require('lost'),
-    poststylus   = require('poststylus'),
-    config       = require('config'),
-    babel        = require("gulp-babel");
+const postcss      = require('gulp-postcss'),
+      gulp         = require('gulp'),
+      autoprefixer = require('autoprefixer'),
+      mqpacker     = require('css-mqpacker'),
+      csswring     = require('csswring'),
+      stylus       = require('gulp-stylus'),
+      concatCss    = require('gulp-concat-css'),
+      minifyCss    = require('gulp-minify-css'),
+      nib          = require('nib'),
+      rupture      = require('rupture'),
+      spritesmith  = require('gulp.spritesmith'),
+      browserSync  = require('browser-sync').create(),
+      concat       = require('gulp-concat'),
+      uglify       = require('gulp-uglify'),
+      notify       = require("gulp-notify"),
+      plumber      = require('gulp-plumber'),
+      gutil        = require('gulp-util'),
+      lost         = require('lost'),
+      poststylus   = require('poststylus'),
+      config       = require('config'),
+      babel        = require('gulp-babel'),
+      browserify   = require('browserify'),
+      babelify     = require('babelify'),
+      source       = require('vinyl-source-stream');
 
 // Stylus to CSS
 gulp.task('stylus', function () {
@@ -82,23 +85,24 @@ gulp.task('sprite', function () {
     return spriteData.pipe(gulp.dest(config.get('sprite.resultPath')));
 });
 
-// Scripts
-gulp.task('scripts', function () {
-    return gulp.src(config.get('scripts.files'))
-        .pipe(plumber({
-            errorHandler: onError
-        }))
-        .pipe(concat(config.get('scripts.resultFile')))
-        .pipe(gulp.dest(config.get('scripts.resultPath')));
+// Browserify
+gulp.task('browserify', function () {
+    return browserify({
+        entries: config.get('browserify.path'),
+        debug: true,
+        transform: [babelify]
+    })
+        .bundle()
+        .pipe(source(config.get('browserify.resultFile')))
+        .pipe(gulp.dest(config.get('browserify.resultPath')));
 });
 
 // Compress
-gulp.task('compress', ['scripts'], function () {
+gulp.task('compress', ['browserify'], function () {
     return gulp.src(config.get('compress.path'))
         .pipe(plumber({
             errorHandler: onError
         }))
-        .pipe(babel())
         .pipe(uglify())
         .pipe(gulp.dest(config.get('compress.resultPath')))
         .pipe(notify("JS файл готов!"));
