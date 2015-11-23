@@ -6,7 +6,6 @@ const postcss      = require('gulp-postcss'),
       stylus       = require('gulp-stylus'),
       concatCss    = require('gulp-concat-css'),
       minifyCss    = require('gulp-minify-css'),
-      nib          = require('nib'),
       rupture      = require('rupture'),
       spritesmith  = require('gulp.spritesmith'),
       browserSync  = require('browser-sync').create(),
@@ -21,7 +20,8 @@ const postcss      = require('gulp-postcss'),
       babel        = require('gulp-babel'),
       browserify   = require('browserify'),
       babelify     = require('babelify'),
-      source       = require('vinyl-source-stream');
+      source       = require('vinyl-source-stream'),
+      fileinclude = require('gulp-file-include');
 
 // Stylus to CSS
 gulp.task('stylus', function () {
@@ -30,7 +30,7 @@ gulp.task('stylus', function () {
             errorHandler: onError
         }))
         .pipe(stylus(
-            {use: [nib(), poststylus(['lost']), rupture()], import: ['nib', 'rupture']}
+            {use: [poststylus(['lost']), rupture()], import: ['rupture']}
         ))
         .pipe(gulp.dest(config.get('stylus.collectorCompilePath')))
         .pipe(browserSync.stream());
@@ -108,6 +108,15 @@ gulp.task('compress', ['browserify'], function () {
         .pipe(notify("JS файл готов!"));
 });
 
+gulp.task('fileinclude', function() {
+    gulp.src(['./src/html/*.html', '!./src/html/includes/*.html'])
+        .pipe(fileinclude({
+            prefix: '@@',
+            basepath: './src/html/includes'
+        }))
+        .pipe(gulp.dest('./'));
+});
+
 // Default action
 gulp.task('default', function () {
     gulp.start('minify-css', 'compress');
@@ -126,6 +135,7 @@ gulp.task('serve', function () {
     gulp.watch(config.get('watch.compress'), ['compress']);
     gulp.watch(config.get('watch.buildCss')).on('change', browserSync.reload);
     gulp.watch(config.get('watch.buildJs')).on('change', browserSync.reload);
+    gulp.watch("./src/html/**/*.html", ['fileinclude']);
     gulp.watch("*.html").on('change', browserSync.reload);
 });
 
