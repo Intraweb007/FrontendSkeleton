@@ -118,6 +118,22 @@ gulp.task('fileinclude', function () {
         .pipe(gulp.dest('./'));
 });
 
+gulp.task('compress-vendor', ['concat-vendor'], function () {
+    return gulp.src(config.get('compress.vendorPath'))
+        .pipe(plumber({
+            errorHandler: onError
+        }))
+        .pipe(uglify())
+        .pipe(gulp.dest(config.get('compress.resultPath')))
+        .pipe(notify("JS Vendor файл готов!"));
+});
+
+gulp.task('concat-vendor', function () {
+    return gulp.src(config.get('concatVendor.path'))
+        .pipe(concat('vendor.js'))
+        .pipe(gulp.dest(config.get('concatVendor.resultPath')))
+});
+
 // Default action
 gulp.task('default', function () {
     gulp.start('minify-css', 'compress');

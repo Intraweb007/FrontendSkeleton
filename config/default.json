@@ -28,11 +28,19 @@
     },
     "compress": {
         "path": "./dist/build.js",
+        "vendorPath": "./dist/vendor.js",
         "resultPath": "./dist/min"
     },
     "browserify": {
         "path": "./src/js/main.js",
         "resultFile": "build.js",
+        "resultPath": "./dist"
+    },
+    "concatVendor": {
+        "path": [
+            "./src/vendor/vue/vue.min.js",
+            "./src/vendor/vue/vue-resource.min.js"
+        ],
         "resultPath": "./dist"
     },
     "watch": {

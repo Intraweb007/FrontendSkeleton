@@ -7,5 +7,7 @@ $(function() {
         }
     }
 
+    console.log(new Vue());
+
     var app = new App();
 });
