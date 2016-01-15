@@ -4,6 +4,9 @@
   margin: 0;
   outline: none;
 }
+.body {
+  color: #000;
+}
 section {
   *zoom: 1;
   max-width: 980px;

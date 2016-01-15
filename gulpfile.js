@@ -5,7 +5,7 @@ const postcss      = require('gulp-postcss'),
       csswring     = require('csswring'),
       stylus       = require('gulp-stylus'),
       concatCss    = require('gulp-concat-css'),
-      minifyCss    = require('gulp-minify-css'),
+      nano         = require('gulp-cssnano'),
       rupture      = require('rupture'),
       spritesmith  = require('gulp.spritesmith'),
       browserSync  = require('browser-sync').create(),
@@ -50,7 +50,6 @@ gulp.task('concat', function () {
 // CSS
 gulp.task('css', ['concat'], function () {
     var processors = [
-        autoprefixer({browsers: ['last 3 version']}),
         mqpacker,
         csswring
     ];
@@ -68,7 +67,13 @@ gulp.task('minify-css', ['css'], function () {
         .pipe(plumber({
             errorHandler: onError
         }))
-        .pipe(minifyCss({compatibility: 'ie8'}))
+        .pipe(
+            nano({
+                autoprefixer: {
+                    browsers: ['last 3 version']
+                }
+            })
+        )
         .pipe(gulp.dest(config.get('minify.resultPath')))
         .pipe(notify("CSS cкомпилирован!"));
 });

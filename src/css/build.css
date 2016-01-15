@@ -1,8 +1,18 @@
+.body {
+  color: red;
+}
+.body {
+  color: blue;
+}
 * {
   box-sizing: border-box;
   font-smoothing: antialiased;
   margin: 0;
   outline: none;
+}
+
+.body {
+  color: #000;
 }
 
 section {
