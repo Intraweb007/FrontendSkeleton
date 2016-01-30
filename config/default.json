@@ -38,8 +38,8 @@
     },
     "concatVendor": {
         "path": [
-            "./src/vendor/vue/vue.min.js",
-            "./src/vendor/vue/vue-resource.min.js"
+            "./src/vendor/vue/vue.js",
+            "./src/vendor/vue/vue-resource.js"
         ],
         "resultPath": "./dist"
     },
