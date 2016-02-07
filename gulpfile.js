@@ -22,7 +22,7 @@ const postcss      = require('gulp-postcss'),
       babelify     = require('babelify'),
       source       = require('vinyl-source-stream'),
       fileinclude  = require('gulp-file-include'),
-      stringify    = require('stringify');
+      vueify      = require('vueify');
 
 // Stylus to CSS
 gulp.task('stylus', function () {
@@ -96,7 +96,7 @@ gulp.task('browserify', function () {
     return browserify({
         entries: config.get('browserify.path'),
         debug: true,
-        transform: [babelify.configure({presets: ["es2015"]}), stringify({extensions: ['.html'], minify: false})]
+        transform: [babelify.configure({presets: ["es2015"]}), vueify]
     })
         .bundle()
         .pipe(source(config.get('browserify.resultFile')))

@@ -46,7 +46,7 @@
     "watch": {
         "stylus": "./src/stylus/**/*.styl",
         "minify": "./src/css/collector.css",
-        "compress": "./src/js/**/*.js",
+        "compress": ["./src/js/**/*.js", "./src/js/**/*.vue"],
         "buildCss": "./dist/build.css",
         "buildJs": "./dist/min/build.js"
     }

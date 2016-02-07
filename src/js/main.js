@@ -1,13 +1,20 @@
 var module = require('./module');
+var Vue = require('vue');
+var Hello = require('./components/hello.vue');
 
-$(function() {
+$(function () {
     class App {
         constructor() {
             console.log('Hello, ES6!');
         }
     }
 
-    console.log(new Vue());
+    new Vue({
+        el: "#app",
+        components: {
+            hello: Hello
+        }
+    });
 
     var app = new App();
 });
