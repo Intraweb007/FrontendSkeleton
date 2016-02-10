@@ -4,7 +4,7 @@
     width 100%
     background #fafafa
     margin 24px 0
-    padding 0
+    padding 24px 0
     text-align center
 </style>
 

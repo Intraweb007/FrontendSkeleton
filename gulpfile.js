@@ -22,7 +22,7 @@ const postcss      = require('gulp-postcss'),
       babelify     = require('babelify'),
       source       = require('vinyl-source-stream'),
       fileinclude  = require('gulp-file-include'),
-      vueify      = require('vueify');
+      vueify       = require('vueify');
 
 // Stylus to CSS
 gulp.task('stylus', function () {
