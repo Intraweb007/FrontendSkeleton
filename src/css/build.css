@@ -299,11 +299,8 @@ div:last-child {
 }
 
 div:nth-child(0n) {
-  float: right;
-}
-
-div:nth-child(0n) {
   margin-right: 0;
+  float: right;
 }
 
 div:nth-child(0n + 1) {
@@ -326,11 +323,8 @@ div:nth-child(0n + 1) {
   }
 
   div:nth-child(1n) {
-    float: right;
-  }
-
-  div:nth-child(1n) {
     margin-right: 0;
+    float: right;
   }
 
   div:nth-child(1n + 1) {

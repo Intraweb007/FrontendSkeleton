@@ -14,7 +14,7 @@
 
 <script type="text/babel">
     module.exports = {
-        data: function() {
+        data() {
             return {
                 message: "Hello, I am Component!"
             }

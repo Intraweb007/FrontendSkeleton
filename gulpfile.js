@@ -13,7 +13,6 @@ const postcss      = require('gulp-postcss'),
       uglify       = require('gulp-uglify'),
       notify       = require("gulp-notify"),
       plumber      = require('gulp-plumber'),
-      gutil        = require('gulp-util'),
       lost         = require('lost'),
       poststylus   = require('poststylus'),
       config       = require('config'),
@@ -24,12 +23,32 @@ const postcss      = require('gulp-postcss'),
       fileinclude  = require('gulp-file-include'),
       vueify       = require('vueify');
 
+var processors = [
+    mqpacker,
+    csswring
+];
+
+vueify.compiler.applyConfig({
+    autoprefixer: {},
+    postcss: processors
+});
+
+var errorHandler = function() {
+    var args = Array.prototype.slice.call(arguments);
+    // Send error to notification center with gulp-notify
+    notify.onError({
+        title: "Compile Error",
+        message: "<%= error.message %>"
+    }).apply(this, args);
+
+    // Keep gulp from hanging on this task
+    this.emit('end');
+};
+
 // Stylus to CSS
 gulp.task('stylus', function () {
     return gulp.src(config.get('stylus.collectorPath'))
-        .pipe(plumber({
-            errorHandler: onError
-        }))
+        .pipe(plumber({errorHandler: errorHandler}))
         .pipe(stylus(
             {use: [poststylus(['lost']), rupture()], import: ['rupture']}
         ))
@@ -40,23 +59,15 @@ gulp.task('stylus', function () {
 // Concat CSS Files
 gulp.task('concat', function () {
     return gulp.src(config.get('concat.path'))
-        .pipe(plumber({
-            errorHandler: onError
-        }))
+        .pipe(plumber({errorHandler: errorHandler}))
         .pipe(concatCss(config.get('concat.resultCss')))
         .pipe(gulp.dest(config.get('concat.resultPath')));
 });
 
 // CSS
 gulp.task('css', ['concat'], function () {
-    var processors = [
-        mqpacker,
-        csswring
-    ];
     return gulp.src(config.get('css.path'))
-        .pipe(plumber({
-            errorHandler: onError
-        }))
+        .pipe(plumber({errorHandler: errorHandler}))
         .pipe(postcss(processors))
         .pipe(gulp.dest(config.get('css.resultPath')));
 });
@@ -64,14 +75,10 @@ gulp.task('css', ['concat'], function () {
 // Minify CSS
 gulp.task('minify-css', ['css'], function () {
     return gulp.src(config.get('minify.path'))
-        .pipe(plumber({
-            errorHandler: onError
-        }))
+        .pipe(plumber({errorHandler: errorHandler}))
         .pipe(
             nano({
-                autoprefixer: {
-                    browsers: ['last 3 version']
-                }
+                autoprefixer: {}
             })
         )
         .pipe(gulp.dest(config.get('minify.resultPath')))
@@ -99,6 +106,7 @@ gulp.task('browserify', function () {
         transform: [babelify.configure({presets: ["es2015"]}), vueify]
     })
         .bundle()
+        .on('error', errorHandler)
         .pipe(source(config.get('browserify.resultFile')))
         .pipe(gulp.dest(config.get('browserify.resultPath')));
 });
@@ -106,9 +114,7 @@ gulp.task('browserify', function () {
 // Compress
 gulp.task('compress', ['browserify'], function () {
     return gulp.src(config.get('compress.path'))
-        .pipe(plumber({
-            errorHandler: onError
-        }))
+        .pipe(plumber({errorHandler: errorHandler}))
         .pipe(uglify())
         .pipe(gulp.dest(config.get('compress.resultPath')))
         .pipe(notify("JS файл готов!"));
@@ -125,9 +131,7 @@ gulp.task('fileinclude', function () {
 
 gulp.task('compress-vendor', ['concat-vendor'], function () {
     return gulp.src(config.get('compress.vendorPath'))
-        .pipe(plumber({
-            errorHandler: onError
-        }))
+        .pipe(plumber({errorHandler: errorHandler}))
         .pipe(uglify())
         .pipe(gulp.dest(config.get('compress.resultPath')))
         .pipe(notify("JS Vendor файл готов!"));
@@ -160,8 +164,3 @@ gulp.task('serve', function () {
     gulp.watch("./src/html/**/*.html", ['fileinclude']);
     gulp.watch("*.html").on('change', browserSync.reload);
 });
-
-var onError = function (err) {
-    gutil.beep();
-    console.log(err);
-};
