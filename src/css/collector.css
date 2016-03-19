@@ -202,7 +202,7 @@ section {
   margin-left: auto;
   margin-right: auto;
   height: 500px;
-  background: #bbb;
+  background: #fafafa;
 }
 section:before {
   content: '';
@@ -245,24 +245,4 @@ div:nth-child(0n) {
 }
 div:nth-child(0n + 1) {
   clear: left;
-}
-@media only screen and (max-width: 800px) {
-  div {
-    width: calc(99.99% * 1/1 - (30px - 30px * 1/1));
-  }
-  div:nth-child(1n) {
-    float: left;
-    margin-right: 30px;
-    clear: none;
-  }
-  div:last-child {
-    margin-right: 0;
-  }
-  div:nth-child(1n) {
-    margin-right: 0;
-    float: right;
-  }
-  div:nth-child(1n + 1) {
-    clear: left;
-  }
 }

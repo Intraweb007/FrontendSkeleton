@@ -1,4 +1,9 @@
 {
+    "fileinclude": {
+        "paths": ["./src/html/*.html", "!./src/html/includes/*.html"],
+        "basePath": "./src/html/includes",
+        "resultPath": "./"
+    },
     "stylus": {
         "collectorPath": "./src/stylus/collector.styl",
         "collectorCompilePath": "./src/css"
@@ -8,12 +13,8 @@
         "resultCss": "build.css",
         "resultPath": "./src/css"
     },
-    "css": {
-        "path": "./src/css/build.css",
-        "resultPath": "./dist"
-    },
     "minify": {
-        "path": "./dist/build.css",
+        "path": "./src/css/build.css",
         "resultPath": "./dist"
     },
     "sprite": {
@@ -48,6 +49,7 @@
         "minify": "./src/css/collector.css",
         "compress": ["./src/js/**/*.js", "./src/js/**/*.vue"],
         "buildCss": "./dist/build.css",
-        "buildJs": "./dist/min/build.js"
+        "buildJs": "./dist/min/build.js",
+        "fileinclude": "./src/html/**/*.html"
     }
 }
