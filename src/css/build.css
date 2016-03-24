@@ -251,4 +251,5 @@ body {
 h1 {
   display: inline-block;
   font-size: 48px;
+  text-align: center;
 }
