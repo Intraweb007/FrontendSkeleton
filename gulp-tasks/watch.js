@@ -6,7 +6,6 @@ module.exports = function (gulp, plugins, helpers) {
             }
         });
 
-        gulp.watch(plugins.config.get('watch.stylus'), ['css:stylus']);
         gulp.watch(plugins.config.get('watch.minify'), ['css:minify']);
         gulp.watch(plugins.config.get('watch.compress'), ['js:app:compress']);
         gulp.watch(plugins.config.get('watch.buildCss')).on('change', plugins.browserSync.reload);
