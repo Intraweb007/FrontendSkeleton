@@ -12,5 +12,8 @@ new Vue({
     el: "#app",
     ready() {
         console.log('Hello, Vue!');
+    },
+    components: {
+        hi: require('./component.vue')
     }
 });

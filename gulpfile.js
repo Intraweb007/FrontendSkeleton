@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'production';
+
 const gulp = require('gulp'),
     helpers = require('./gulp-tasks/helpers'),
     gulpLoadPlugins = require('gulp-load-plugins'),
